@@ -1,0 +1,33 @@
+{
+	"name": "vue-svga-uploader",
+	"version": "1.0.0",
+	"description": "一个支持上传 SVGA/图片 的 Vue 组件",
+	"main": "dist/index.umd.js",
+	"module": "dist/index.es.js",
+	"files": [
+		"dist"
+	],
+	"keywords": [
+		"svga",
+		"uploader",
+		"vue3",
+		"component"
+	],
+	"author": "CodeWang",
+	"license": "MIT",
+	"peerDependencies": {
+		"vue": "^3.0.0"
+	},
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^6.0.1",
+		"element-plus": "^2.10.2",
+		"svgaplayerweb": "^2.3.2",
+		"vite": "^5.4.19",
+		"vue": "^3.0.0"
+	}
+}
