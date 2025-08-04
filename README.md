@@ -17,15 +17,30 @@
 
 ---
 
-## 安装
+## 安装依赖
 
 ```bash
-npm install vue-svga-uploader
+npm install vue-svga-uploader svgaplayerweb
 
-yarn add vue-svga-uploader
+yarn add vue-svga-uploader svgaplayerweb
 ```
 
 ## 使用示例
+
+### main.js 或 main.ts 引入组件
+
+```js
+import { createApp } from 'vue'
+// 引入组件
+import VueSvgaUploader from 'vue-svga-uploader'
+// 引入样式
+import 'vue-svga-uploader/dist/style.css'
+
+const app = createApp(App)
+//注册组件
+app.use(VueSvgaUploader) 
+app.mount('#app')
+```
 
 ```vue
 <template>
