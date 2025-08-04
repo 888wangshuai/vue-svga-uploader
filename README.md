@@ -1,6 +1,6 @@
 # vue-svga-uploader
 
-一个基于 Element Plus 和 SVGAPlayerWeb 的上传组件，支持图片和 `.svga` 动画上传与预览，适配 Vue 3 + Vite 项目。支持自定义上传逻辑、删除逻辑、上传数量限制、外部初始文件传入等功能。
+一个基于 Element Plus 和 SVGAPlayerWeb 的上传组件，支持图片和 `.svga` 动画上传与预览，适配 Vue 3 + Vite 项目。支持自定义上传逻辑、删除逻辑、上传数量限制、传入等功能。
 
 ---
 
@@ -53,21 +53,20 @@ app.mount('#app')
 </template>
 
 <script setup>
-import SvgaUploader from 'vue-svga-uploader'
-
+// 外部初始文件
 const fileUrls = [
   'https://xxx.com/image.png',
   'https://xxx.com/demo.svga'
 ]
-
+// 上传逻辑
 const uploadFn = async (file) => {
   // 返回格式示例：{ data: { url, ossId, fileName } }
   return await api.upload(file)
 }
-
+// 删除逻辑
 const removeFn = async (file) => {
-  // 根据 file.ossId 删除文件
-  return await api.deleteFile(file.ossId)
+  // 根据 删除文件
+  return await api.deleteFile()
 }
 </script>
 
