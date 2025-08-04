@@ -1,6 +1,6 @@
 {
 	"name": "vue-svga-uploader",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "A Vue 3 component for uploading and previewing SVGA and image files",
 	"main": "dist/index.umd.js",
 	"module": "dist/index.es.js",
