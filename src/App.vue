@@ -2,8 +2,8 @@
 	<SvgaUploader
 		:uploadFn="uploadToServer"
 		:removeFn="handleRemove"
-		:acceptTypes="['svga']"
-		:limit="1"
+		:acceptTypes="['gif', 'svga', 'mp4']"
+		:limit="3"
 		:initial-files="fileListFromServer"
 	>
 		<template
@@ -12,6 +12,7 @@
 				isPreviewImage,
 				previewImageUrl,
 				previewDialogId,
+				isPreviewVideo,
 				onClose,
 			}"
 		>
@@ -24,6 +25,15 @@
 				<div v-if="isPreviewImage">
 					<img :src="previewImageUrl" style="width: 100%" />
 				</div>
+				<div v-if="isPreviewVideo">
+					<video
+						:src="previewImageUrl"
+						style="width: 100%; height: auto"
+						controls
+						autoplay
+						playsinline
+					></video>
+				</div>
 				<div v-else :id="previewDialogId" class="svga-dialog-box"></div>
 			</el-dialog>
 		</template>
@@ -34,10 +44,10 @@
 import SvgaUploader from './SvgaUploader.vue'
 import { ref } from 'vue'
 // 初始文件列表
-// const fileListFromServer = ref([
-// 	'http://localhost:3001/uploads/sports_car-xxx.svga',
-// 	'http://localhost:3001/uploads/cat.jpg',
-// ])
+const fileListFromServer = ref([
+	// 'http://localhost:3001/uploads/sports_car-xxx.svga',
+	// 'http://localhost:3001/uploads/cat.jpg',
+])
 // 上传函数
 const uploadToServer = async (file) => {
 	try {

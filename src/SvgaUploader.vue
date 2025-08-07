@@ -20,6 +20,15 @@
 							:src="file.url"
 							class="thumb-img"
 						/>
+						<video
+							v-else-if="isVideo(file)"
+							:src="file.url"
+							class="thumb-img"
+							muted
+							autoplay
+							loop
+							playsinline
+						></video>
 						<div
 							v-else
 							class="thumb-svga"
@@ -35,7 +44,6 @@
 						</div>
 					</div>
 
-					<!-- 操作按钮 -->
 					<span class="el-upload-list__item-actions">
 						<span
 							class="el-upload-list__item-preview"
@@ -78,6 +86,7 @@
 			:isPreviewImage="isPreviewImage"
 			:previewImageUrl="previewImageUrl"
 			:previewDialogId="previewDialogId"
+			:isPreviewVideo="isPreviewVideo"
 			:onClose="() => (previewVisible = false)"
 		>
 			<!-- 默认预览弹窗 -->
@@ -87,13 +96,25 @@
 				title="预览动画"
 				destroy-on-close
 			>
-				<img
-					v-if="isPreviewImage"
-					:src="previewImageUrl"
-					alt="预览图"
-					style="width: 100%; height: auto"
-				/>
-				<div v-else :id="previewDialogId" class="svga-dialog-box"></div>
+				<template v-if="isPreviewImage">
+					<img
+						:src="previewImageUrl"
+						alt="预览图"
+						style="width: 100%; height: auto"
+					/>
+				</template>
+				<template v-else-if="isPreviewVideo">
+					<video
+						:src="previewImageUrl"
+						style="width: 100%; height: auto"
+						controls
+						autoplay
+						playsinline
+					></video>
+				</template>
+				<template v-else>
+					<div :id="previewDialogId" class="svga-dialog-box"></div>
+				</template>
 			</el-dialog>
 		</slot>
 	</div>
@@ -108,7 +129,10 @@ import SVGA from 'svgaplayerweb'
 const props = defineProps({
 	uploadFn: { type: Function, required: true },
 	removeFn: { type: Function, required: true },
-	acceptTypes: { type: Array, default: () => ['png', 'jpg', 'jpeg', 'svga'] },
+	acceptTypes: {
+		type: Array,
+		default: () => ['png', 'jpg', 'jpeg', 'gif', 'svga', 'mp4', 'mov'],
+	},
 	limit: { type: Number, default: 1 },
 	initialFiles: { type: Array, default: () => [] },
 })
@@ -118,6 +142,7 @@ const uploadingMap = ref({})
 const previewVisible = ref(false)
 const previewDialogId = 'svga-dialog-preview'
 const isPreviewImage = ref(false)
+const isPreviewVideo = ref(false)
 const previewImageUrl = ref('')
 
 const handleExceed = () => {
@@ -133,9 +158,11 @@ const beforeUpload = (file) => {
 	return true
 }
 
-const isImage = (file) =>
-	file.type?.startsWith('image/') || /\.(png|jpg|jpeg)$/i.test(file.name)
+const isImage = (file) => /\.(png|jpg|jpeg|gif)$/i.test(file.name)
 
+const isVideo = (file) => /\.(mp4|mov)$/i.test(file.name)
+
+const isSVGA = (file) => /\.(svga)$/i.test(file.name)
 const uploadFile = async ({ file, onSuccess, onError }) => {
 	uploadingMap.value[file.uid] = true
 	try {
@@ -153,7 +180,8 @@ const uploadFile = async ({ file, onSuccess, onError }) => {
 		}
 		fileList.value.push(newItem)
 		await nextTick()
-		if (!isImage(newItem)) {
+		await nextTick()
+		if (isSVGA(newItem)) {
 			playSVGA(`svga-thumb-${newItem.uid}`, newItem.url)
 		}
 		onSuccess?.(result, file)
@@ -180,11 +208,12 @@ const handleRemove = () => false
 
 const handlePreview = async (file) => {
 	isPreviewImage.value = isImage(file)
-	if (isPreviewImage.value) {
-		previewImageUrl.value = file.url
-		previewVisible.value = true
-	} else {
-		previewVisible.value = true
+	isPreviewVideo.value = isVideo(file)
+
+	previewImageUrl.value = file.url
+	previewVisible.value = true
+
+	if (isSVGA(file)) {
 		await nextTick()
 		playSVGA(previewDialogId, file.url)
 	}
@@ -222,7 +251,7 @@ watch(
 		await nextTick()
 
 		fileList.value.forEach((item) => {
-			if (!isImage(item)) {
+			if (isSVGA(item)) {
 				playSVGA(`svga-thumb-${item.uid}`, item.url)
 			}
 		})
